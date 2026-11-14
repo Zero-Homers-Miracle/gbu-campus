@@ -159,6 +159,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     const hints = {
       EADDRINUSE: 'the port is already in use; stop the other instance or set PORT',
       EACCES: 'the port cannot be bound; check permissions or choose another PORT',
+      ENOENT: 'no completed build found; run npm run build first',
     };
     if (typeof error?.code === 'string' && hints[error.code]) console.error(`Reason: ${hints[error.code]}.`);
     else if (typeof error?.code === 'string') console.error(`Reason code: ${error.code}.`);
