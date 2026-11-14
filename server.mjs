@@ -153,5 +153,17 @@ async function main() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  main().catch(() => { console.error('Campus startup failed. Check the completed build and port configuration.'); process.exitCode = 1; });
+  main().catch((error) => {
+    console.error('Campus startup failed. Check the completed build and port configuration.');
+    // Say why without writing filesystem paths, request URLs or environment values.
+    const hints = {
+      EADDRINUSE: 'the port is already in use; stop the other instance or set PORT',
+      EACCES: 'the port cannot be bound; check permissions or choose another PORT',
+      ENOENT: 'no completed build found; run npm run build first',
+    };
+    if (typeof error?.code === 'string' && hints[error.code]) console.error(`Reason: ${hints[error.code]}.`);
+    else if (typeof error?.code === 'string') console.error(`Reason code: ${error.code}.`);
+    else if (typeof error?.message === 'string') console.error(error.message);
+    process.exitCode = 1;
+  });
 }
